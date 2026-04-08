@@ -8,6 +8,7 @@ This project develops an intelligent machine learning system to classify Estroge
 The system builds a full ML pipeline including preprocessing, feature engineering, model training, hyperparameter tuning, and evaluation.
 
 👥 Team Members
+
 Thanujaa Vudayagiri Ravindra Babu – Logistic Regression, SVM, Evaluation
 
 Tejaswi Kasipally – EDA, Feature Selection, Decision Tree
