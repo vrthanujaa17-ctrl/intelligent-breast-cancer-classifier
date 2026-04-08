@@ -26,7 +26,9 @@ The dataset contains a typo:
 
 This is handled during preprocessing.
 
-📁 Project Structure
+## 📁 Project Structure
+
+```bash
 intelligent-breast-cancer-classifier/
 │
 ├── data/
@@ -49,9 +51,12 @@ intelligent-breast-cancer-classifier/
 │   └── models/
 │
 ├── notebooks/
+│
 ├── requirements.txt
 ├── README.md
 └── .gitignore
+```
+
 
 ⚙️ Installation
 1. Clone the repository
