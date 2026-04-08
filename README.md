@@ -9,7 +9,9 @@ The system builds a full ML pipeline including preprocessing, feature engineerin
 
 👥 Team Members
 Thanujaa Vudayagiri Ravindra Babu – Logistic Regression, SVM, Evaluation
+
 Tejaswi Kasipally – EDA, Feature Selection, Decision Tree
+
 Shreyanka Saggidi – Random Forest, Visualization, Model Comparison
 
 📊 Dataset
