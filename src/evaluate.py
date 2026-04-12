@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from sklearn.metrics import (
     accuracy_score,
@@ -40,6 +41,12 @@ def cross_validate_model(model, X_train, y_train, cv=5):
 
 
 def save_results(results_list, output_path):
+    """
+    Save results to CSV.
+    Automatically creates parent directory if needed.
+    """
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
     df = pd.DataFrame(results_list)
     df.to_csv(output_path, index=False)
+    print(f"Results saved to: {output_path}")
     return df

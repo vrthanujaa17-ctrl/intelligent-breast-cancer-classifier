@@ -6,7 +6,6 @@ from sklearn.preprocessing import StandardScaler
 def load_data(file_path: str) -> pd.DataFrame:
     """
     Load dataset from CSV file.
-    low_memory=False avoids mixed-type warnings in large datasets.
     """
     df = pd.read_csv(file_path, low_memory=False)
     return df
@@ -14,17 +13,12 @@ def load_data(file_path: str) -> pd.DataFrame:
 
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Clean dataset by:
-    1. Dropping unnecessary ID columns
-    2. Keeping the target column safe
+    Clean dataset by dropping unnecessary ID-like columns,
+    but keep patient_id and the target column.
     """
     df = df.copy()
 
-    # Drop patient ID explicitly
-    df = df.drop(columns=["patient_id"], errors="ignore")
-
-    # Drop other ID-like columns, but do NOT drop the target column
-    protected_cols = {"er_status_measured_by_ihc"}
+    protected_cols = {"patient_id", "er_status_measured_by_ihc"}
     id_cols = [col for col in df.columns if "id" in col.lower() and col not in protected_cols]
     df = df.drop(columns=id_cols, errors="ignore")
 
@@ -33,20 +27,18 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
 def prepare_target(df: pd.DataFrame, target_col: str):
     """
-    Prepare features X and target y.
-
-    This version:
-    - handles misspelled target values like 'Positve'
-    - normalizes text labels
-    - maps binary target values to 0/1
-    - drops rows with missing/unusable target values
-    - fills missing feature values
-    - converts categorical features to numeric
+    Prepare features X, target y, and patient_ids.
+    Keeps the real patient_id for later prediction output,
+    but excludes it from model training features.
+    Handles typo in dataset label: 'Positve'.
     """
     df = df.copy()
 
     if target_col not in df.columns:
         raise ValueError(f"Target column '{target_col}' not found in dataset.")
+
+    if "patient_id" not in df.columns:
+        raise ValueError("Expected 'patient_id' column not found in dataset.")
 
     print("\nRaw target value counts:")
     print(df[target_col].value_counts(dropna=False).head(20))
@@ -54,18 +46,16 @@ def prepare_target(df: pd.DataFrame, target_col: str):
     # Drop rows where target is missing
     df = df.dropna(subset=[target_col]).copy()
 
-    # Normalize target text
+    # Normalize target values
     raw_target = df[target_col].astype(str).str.strip().str.lower()
 
-    # Robust mapping, including dataset typo: 'positve'
     target_mapping = {
         "positive": 1,
-        "positve": 1,
+        "positve": 1,   # typo in dataset
         "pos": 1,
         "1": 1,
         "yes": 1,
         "true": 1,
-
         "negative": 0,
         "neg": 0,
         "0": 0,
@@ -75,7 +65,7 @@ def prepare_target(df: pd.DataFrame, target_col: str):
 
     y = raw_target.map(target_mapping)
 
-    # Keep only rows where mapping worked
+    # Keep only mapped rows
     valid_mask = y.notna()
     df = df.loc[valid_mask].copy()
     y = y.loc[valid_mask].astype(int)
@@ -91,10 +81,13 @@ def prepare_target(df: pd.DataFrame, target_col: str):
             f"Sample normalized values: {unique_raw}"
         )
 
-    # Separate features and target
-    X = df.drop(columns=[target_col])
+    # Preserve patient IDs for later reporting
+    patient_ids = df["patient_id"].copy()
 
-    # Fill missing values in features only
+    # Separate features and target
+    X = df.drop(columns=[target_col, "patient_id"])
+
+    # Fill missing values
     for col in X.columns:
         if pd.api.types.is_numeric_dtype(X[col]):
             X[col] = X[col].fillna(X[col].median())
@@ -105,33 +98,44 @@ def prepare_target(df: pd.DataFrame, target_col: str):
             else:
                 X[col] = X[col].fillna("unknown")
 
-    # Convert categorical columns to dummy variables
+    # Convert categorical columns to numeric
     X = pd.get_dummies(X, drop_first=True)
 
-    return X, y
+    return X, y, patient_ids
 
 
 def split_and_scale_data(
     X: pd.DataFrame,
     y: pd.Series,
+    patient_ids: pd.Series,
     test_size: float = 0.2,
     random_state: int = 42
 ):
     """
-    Split the data into train and test sets.
-    Also returns scaled versions for models like Logistic Regression and SVM.
+    Split the data into train/test sets and scale features.
+    Also keeps aligned patient IDs for train and test sets.
     """
-    X_train, X_test, y_train, y_test = train_test_split(
+    X_train, X_test, y_train, y_test, patient_id_train, patient_id_test = train_test_split(
         X,
         y,
+        patient_ids,
         test_size=test_size,
         random_state=random_state,
         stratify=y
     )
 
     scaler = StandardScaler()
-
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
 
-    return X_train, X_test, y_train, y_test, X_train_scaled, X_test_scaled, scaler
+    return (
+        X_train,
+        X_test,
+        y_train,
+        y_test,
+        patient_id_train,
+        patient_id_test,
+        X_train_scaled,
+        X_test_scaled,
+        scaler,
+    )
