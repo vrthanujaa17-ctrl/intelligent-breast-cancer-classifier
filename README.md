@@ -3,9 +3,9 @@
 
 📌 Project Overview
 
-This project develops an intelligent machine learning system to classify Estrogen Receptor (ER) status in breast cancer patients using the METABRIC dataset.
+This project develops an intelligent decision-support system to classify breast cancer patients using the METABRIC gene expression dataset. The system predicts Estrogen Receptor (ER) status (Positive/Negative) based on clinical and gene expression features.
 
-The system builds a full ML pipeline including preprocessing, feature engineering, model training, hyperparameter tuning, and evaluation.
+Multiple classical machine learning models are implemented, tuned, and compared to evaluate their effectiveness in patient-level classification.
 
 👥 Team Members
 
@@ -34,127 +34,165 @@ The dataset contains a typo:
 
 This is handled during preprocessing.
 
+🎯 Objectives
+
+Predict ER status of breast cancer patients
+
+Compare performance of multiple ML models
+
+Analyze impact of parameter tuning and data splits
+
+Generate patient-level predictions for decision support
+
+🧠 Models Implemented
+
+Logistic Regression
+
+Support Vector Machine (SVM)
+
+Decision Tree
+
+Random Forest
+
+
+
 ## 📁 Project Structure
 
 ```bash
-intelligent-breast-cancer-classifier/
-│
-├── data/
-│   ├── raw/
-│   │   └── metabric.csv
-│   └── processed/
-│
-├── src/
-│   ├── data_preprocessing.py
-│   ├── feature_selection.py
-│   ├── train_models.py
-│   ├── evaluate.py
-│   ├── visualize.py
-│   └── main.py
-│
-├── results/
-│   ├── metrics/
-│   │   └── model_results.csv
-│   ├── plots/
-│   └── models/
-│
-├── notebooks/
-│
-├── requirements.txt
-├── README.md
-└── .gitignore
+intelligent-breast-cancer-classifier/ │ ├── data/ │ ├── raw/ │ │ └── metabric.csv │ ├── src/ │ ├── data_preprocessing.py │ ├── feature_selection.py │ ├── train_models.py │ ├── evaluate.py │ ├── visualize.py │ └── main.py │ ├── results/ │ ├── metrics/ │ │ ├── model_results.csv │ │ ├── parameter_experiments.csv │ │ ├── split_experiments.csv │ │ └── patient_predictions.csv │ │ │ ├── plots/ │ ├── requirements.txt ├── README.md └── .gitignore
 ```
 
 
-⚙️ Installation
+
+▶️ How to Run the Project:
+
 1. Clone the repository
-git clone https://github.com/<your-username>/intelligent-breast-cancer-classifier.git
+
+git clone https://github.com/your-username/intelligent-breast-cancer-classifier.git
 cd intelligent-breast-cancer-classifier
-2. Create virtual environment (optional)
-python -m venv venv
-source venv/bin/activate
-3. Install dependencies
-pip install pandas numpy matplotlib scikit-learn seaborn
+2. Install dependencies
 
-▶️ How to Run the Project
+pip install -r requirements.txt
 
-Step 1: Download dataset
+3.Run the pipeline
 
-Download the dataset from Kaggle and place it here:
-
-data/raw/metabric.csv
-
-Step 2: Run the pipeline
-cd src
-python main.py
+python src/main.py
 
 
-🔄 Workflow
-1.Data loading & cleaning
+⚙️ Pipeline Workflow
 
-2.Target preprocessing (handling typo + mapping labels)
+1. Data Preprocessing
 
-3.Missing value handling
+Load METABRIC dataset
 
-4.One-hot encoding for categorical features
+Handle missing values
 
-5.Train-test split
+Normalize target labels (fix dataset inconsistencies like “Positve”)
 
-6.Feature reduction:
+Encode categorical variables (One-hot encoding)
 
-  Variance filtering
-  
-  PCA
-  
-7.Model training:
+Preserve patient_id for final predictions
 
-  Logistic Regression
-  
-  Support Vector Machine (SVM)
-  
-  Decision Tree
-  
-  Random Forest
-  
-8.Hyperparameter tuning (GridSearchCV)
+2. Feature Engineering
 
-9.Cross-validation
+Variance Threshold Filtering
 
-10.Model evaluation
+Principal Component Analysis (PCA)
 
-11.Visualization and comparison
+3. Model Training & Tuning
+
+Hyperparameter tuning using GridSearchCV
+
+Cross-validation for robustness
+
+4. Experiments Conducted
+
+Parameter Experiments
+
+Logistic Regression (C values)
+
+SVM (kernel, C, gamma)
+
+Decision Tree (depth, criterion)
+
+Random Forest (estimators, depth)
+
+Train/Test Split Experiments
+
+70/30
+
+80/20
+
+90/10
+
+5.Evaluation Metrics
+
+Accuracy
+
+Precision
+
+Recall
+
+F1-Score
+
+ROC-AUC
+
+6. Visualization
+
+Confusion Matrices
+
+ROC Curves
+
+Model Comparison Plots
+
+7. Patient-Level Predictions
+
+Final model generates predictions for individual patients
+
+Output includes:
+
+patient_id
+
+Actual ER status
+
+Predicted ER status
 
 
-📈 Results
+📊 Outputs Generated
 
+CSV Files (in results/metrics/)
 
-| Model               | Accuracy | Precision | Recall | F1-Score | ROC-AUC |
-| ------------------- | -------: | --------: | -----: | -------: | ------: |
-| Logistic Regression |   0.9387 |    0.9404 | 0.9827 |   0.9611 |  0.9563 |
-| SVM                 |   0.9440 |    0.9527 | 0.9758 |   0.9641 |  0.9546 |
-| Decision Tree       |   0.9413 |    0.9717 | 0.9516 |   0.9615 |  0.9430 |
-| Random Forest       |   0.9253 |    0.9251 | 0.9827 |   0.9530 |  0.9503 |
+model_results.csv → Final model comparison
 
-🏆 Key Findings
+parameter_experiments.csv → Parameter tuning results
 
-SVM achieved the highest accuracy (94.4%)
-Logistic Regression achieved the highest ROC-AUC (95.6%)
-Decision Tree showed strong cross-validation performance
-All models performed consistently well on high-dimensional data
+split_experiments.csv → Train/test split analysis
 
-⚠️ Challenges & Solutions
+patient_predictions.csv → Patient-level classification
 
-1. Data inconsistency
-Issue: "Positve" typo in labels
-Solution: Custom target mapping
+Plots (in results/plots/)
 
-2. High dimensionality (~8000 features)
-Solution:
-Variance filtering
-PCA
+Confusion matrices for all models
 
+ROC curves
 
-3. Class imbalance
-More positive cases than negative
-Future work: apply balancing techniques
+Model comparison charts
+
+📈 Key Results
+
+All models achieved high performance (>92% accuracy)
+
+Decision Tree showed strong generalization
+
+SVM achieved high classification performance
+
+Logistic Regression showed stable ROC-AUC performance
+
+🔮 Future Work
+
+Use deep learning models (e.g., Neural Networks)
+
+Feature importance and explainability (SHAP, LIME)
+
+Deployment as a web-based decision-support system
 
