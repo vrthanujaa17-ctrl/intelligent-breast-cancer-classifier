@@ -59,7 +59,45 @@ Random Forest
 ## 📁 Project Structure
 
 ```bash
-intelligent-breast-cancer-classifier/ │ ├── data/ │ ├── raw/ │ │ └── metabric.csv │ ├── src/ │ ├── data_preprocessing.py │ ├── feature_selection.py │ ├── train_models.py │ ├── evaluate.py │ ├── visualize.py │ └── main.py │ ├── results/ │ ├── metrics/ │ │ ├── model_results.csv │ │ ├── parameter_experiments.csv │ │ ├── split_experiments.csv │ │ └── patient_predictions.csv │ │ │ ├── plots/ │ ├── requirements.txt ├── README.md └── .gitignore
+intelligent-breast-cancer-classifier/
+│
+├── data/
+│   ├── raw/
+│   │   └── metabric.csv
+│
+├── src/
+│   ├── data_preprocessing.py
+│   ├── feature_selection.py
+│   ├── train_models.py
+│   ├── evaluate.py
+│   ├── visualize.py
+│   └── main.py
+│
+├── results/
+│   ├── metrics/
+│   │   ├── model_results.csv
+│   │   ├── parameter_experiments.csv
+│   │   ├── split_experiments.csv
+│   │   └── patient_predictions.csv
+│   │
+│   ├── plots/
+│   │   ├── lr_confusion_matrix.png
+│   │   ├── svm_confusion_matrix.png
+│   │   ├── dt_confusion_matrix.png
+│   │   ├── rf_confusion_matrix.png
+│   │   ├── lr_roc_curve.png
+│   │   ├── svm_roc_curve.png
+│   │   ├── dt_roc_curve.png
+│   │   ├── rf_roc_curve.png
+│   │   ├── model_comparison_accuracy.png
+│   │   ├── model_comparison_f1.png
+│   │   └── model_comparison_roc_auc.png
+│
+├── notebooks/
+│
+├── requirements.txt
+├── README.md
+└── .gitignore
 ```
 
 
